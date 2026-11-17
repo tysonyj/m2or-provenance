@@ -1,0 +1,30 @@
+Table 1 - mean AUC by task and model
+model  RandomForest  Logistic  HistGB  ReceptorPrior
+task                                                
+T1            0.664     0.742   0.739          0.751
+T2            0.553     0.630   0.652          0.654
+T3            0.517     0.489   0.591          0.423
+
+T1: 25 folds
+  prior - Logistic      mean +0.008, prior ahead in 15/25 folds
+  prior - HistGB        mean +0.012, prior ahead in 16/25 folds
+  prior - RandomForest  mean +0.086, prior ahead in 20/25 folds
+  median CI width 0.056 (all four models pooled)
+  median per-fold PR-AUC / prevalence: RandomForest 2.79, Logistic 2.75, HistGB 3.38, ReceptorPrior 4.12
+  AUC range 0.454-0.917
+
+T2: 17 folds
+  prior - Logistic      mean +0.024, prior ahead in 9/17 folds
+  prior - HistGB        mean +0.003, prior ahead in 6/17 folds
+  prior - RandomForest  mean +0.101, prior ahead in 10/17 folds
+  median CI width 0.183 (all four models pooled)
+  median per-fold PR-AUC / prevalence: RandomForest 1.77, Logistic 2.52, HistGB 2.16, ReceptorPrior 1.61
+  AUC range 0.254-0.980
+
+T3: 5 folds
+  prior - Logistic      mean -0.066, prior ahead in 1/5 folds
+  prior - HistGB        mean -0.168, prior ahead in 0/5 folds
+  prior - RandomForest  mean -0.094, prior ahead in 1/5 folds
+  median CI width 0.299 (all four models pooled)
+  median per-fold PR-AUC / prevalence: RandomForest 1.09, Logistic 0.99, HistGB 1.16, ReceptorPrior 0.99
+  AUC range 0.249-0.727

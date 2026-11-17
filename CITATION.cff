@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+message: >-
+  If you use this benchmark, its folds, or its code, please cite both the
+  software record and the paper.
+title: "M2OR-Provenance: a three-task benchmark for olfactory receptor activity prediction"
+abstract: >-
+  Fixed folds, an evaluation harness, a leakage checker and per-fold uncertainty
+  for three distinct prediction tasks over the M2OR database of olfactory
+  receptor bioassay records: generalising to a new molecule, generalising to a
+  new source publication, and predicting whether a reported activity replicates.
+  Includes a chemistry-free receptor-prior baseline, an independent
+  re-implementation of the headline label-reliability statistics, and the code
+  that regenerates every figure in the accompanying paper.
+type: software
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-11-17"
+repository-code: "https://github.com/REPLACE_ME/m2or-provenance"
+keywords:
+  - benchmark
+  - evaluation methodology
+  - data leakage
+  - olfactory receptor
+  - cheminformatics
+  - label reliability
+  - reproducibility
+authors:
+  - family-names: Lee
+    given-names: Doo-Hee
+    affiliation: "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+  - family-names: Kang
+    given-names: Ku
+    affiliation: "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+  - family-names: Shin
+    given-names: Myungsik
+    affiliation: "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+  - family-names: Kim
+    given-names: Jeoungyun
+    affiliation: "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+  - family-names: Yoo
+    given-names: Jin
+    affiliation: "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+    email: tysonyj@snu.ac.kr
+references:
+  - type: article
+    title: >-
+      M2OR: a database of olfactory receptor-odorant pairs for understanding the
+      molecular mechanisms of olfaction
+    authors:
+      - family-names: Lalis
+        given-names: Maxence
+      - family-names: Hladis
+        given-names: Matej
+      - family-names: Abi Khalil
+        given-names: Samar
+      - family-names: Briand
+        given-names: "Lo\xEFc"
+      - family-names: Fiorucci
+        given-names: "S\xE9bastien"
+      - family-names: Topin
+        given-names: "J\xE9r\xE9mie"
+    journal: Nucleic Acids Research
+    volume: 52
+    issue: D1
+    start: 1370
+    end: 1379
+    year: 2024
+    doi: 10.1093/nar/gkad886
+    notes: >-
+      The database this benchmark is built on. Redistributed unmodified in this
+      repository under the Apache License 2.0; please cite it in addition to
+      this record.

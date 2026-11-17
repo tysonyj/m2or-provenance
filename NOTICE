@@ -1,0 +1,35 @@
+M2OR-Provenance
+Copyright 2026 CBRN Defense Research Institute,
+               Ministry of National Defense, Republic of Korea
+
+This product includes software and analysis results developed at the
+CBRN Defense Research Institute, licensed under the Apache License 2.0
+(see LICENSE).
+
+-------------------------------------------------------------------------------
+Third-party content redistributed in this repository
+-------------------------------------------------------------------------------
+
+M2OR_20230428.csv
+    The M2OR database release of 28 April 2023, redistributed UNMODIFIED from
+    https://github.com/chemosim-lab/M2OR under the Apache License 2.0. A copy
+    of that licence is in third_party/M2OR-LICENSE-Apache-2.0.
+
+    No change has been made to this file. Every transformation this work
+    applies to it is performed at run time by the scripts in this repository
+    and is visible in their source.
+
+    Copyright holders: Lalis, M.; Hladis, M.; Abi Khalil, S.; Briand, L.;
+    Fiorucci, S.; Topin, J. and the Chemosim laboratory.
+
+    Please cite the database itself when using it:
+      Lalis, M.; Hladis, M.; Abi Khalil, S.; Briand, L.; Fiorucci, S.;
+      Topin, J. M2OR: a database of olfactory receptor-odorant pairs for
+      understanding the molecular mechanisms of olfaction.
+      Nucleic Acids Research 2024, 52 (D1), D1370-D1379.
+      https://doi.org/10.1093/nar/gkad886
+
+ikey_smiles.csv
+    InChIKey to SMILES mappings resolved from PubChem via the PUG REST API.
+    PubChem data are in the public domain; see
+    https://pubchem.ncbi.nlm.nih.gov/docs/downloads

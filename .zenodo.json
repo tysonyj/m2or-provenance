@@ -1,0 +1,57 @@
+{
+  "upload_type": "software",
+  "title": "M2OR-Provenance: a three-task benchmark for olfactory receptor activity prediction",
+  "version": "1.0.0",
+  "language": "eng",
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "description": "<p>Fixed folds, an evaluation harness, a leakage checker and per-fold uncertainty for three distinct prediction tasks over the M2OR database of olfactory receptor bioassay records:</p><ul><li><strong>T1 new molecule</strong> &mdash; scaffold-disjoint, five repeated splits: will this receptor respond to a chemotype not in training?</li><li><strong>T2 new source</strong> &mdash; publication-disjoint: will this laboratory's screen report a positive?</li><li><strong>T3 replication</strong> &mdash; publication-disjoint, test restricted to pairs already called positive by a training source: will an independent laboratory reproduce a reported positive?</li></ul><p>The harness rebuilds pair-level consensus labels inside each fold from training sources only, runs a four-way leakage audit (pairs, molecules, scaffolds, sources) on every fold and reports it as a table, and reports each fold with a percentile bootstrap interval instead of pooling folds into a single figure. Four reference models run on every fold: random forest, L2 logistic regression and histogram gradient boosting on Morgan fingerprints with a receptor indicator, plus a <strong>receptor prior</strong> that uses no chemical information at all and predicts each receptor's positive rate in the training fold. The prior is a diagnostic, not a recommended model: a result that does not clear it has not been shown to use chemical structure.</p><p>Also included: an independent re-implementation of the three headline label-reliability statistics, written without reference to the primary analysis code and using only the Python standard library for parsing; the label-composition and dose-dependence statistics; two controls on the new-source result (a study-design split and a Dawid&ndash;Skene relabelling); and the code that regenerates every figure in the accompanying paper.</p><p>The M2OR release of 28 April 2023 is redistributed unmodified under the Apache License 2.0 so that the exact bytes the paper analysed remain available; see NOTICE. Please cite the database (doi:10.1093/nar/gkad886) in addition to this record.</p>",
+  "notes": "Record contents are licensed Apache-2.0. M2OR_20230428.csv is third-party content redistributed unmodified under the same licence; see NOTICE and third_party/M2OR-LICENSE-Apache-2.0 for attribution. Running run_benchmark.py --stage folds on the included data must print 'records 37462  sha256 54c430b262c20361'; a different value means the input is not the release analysed in the paper.",
+  "keywords": [
+    "benchmark",
+    "evaluation methodology",
+    "data leakage",
+    "train-test splitting",
+    "olfactory receptor",
+    "cheminformatics",
+    "label reliability",
+    "reproducibility",
+    "QSAR",
+    "structure-activity relationship"
+  ],
+  "creators": [
+    {
+      "name": "Lee, Doo-Hee",
+      "affiliation": "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+    },
+    {
+      "name": "Kang, Ku",
+      "affiliation": "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+    },
+    {
+      "name": "Shin, Myungsik",
+      "affiliation": "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+    },
+    {
+      "name": "Kim, Jeoungyun",
+      "affiliation": "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+    },
+    {
+      "name": "Yoo, Jin",
+      "affiliation": "CBRN Defense Research Institute, Ministry of National Defense, Republic of Korea"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.1093/nar/gkad886",
+      "relation": "isDerivedFrom",
+      "resource_type": "dataset",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/chemosim-lab/M2OR",
+      "relation": "isDerivedFrom",
+      "scheme": "url"
+    }
+  ]
+}
