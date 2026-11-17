@@ -15,7 +15,7 @@ type: software
 license: Apache-2.0
 version: 1.0.0
 date-released: "2026-11-17"
-repository-code: "https://github.com/REPLACE_ME/m2or-provenance"
+repository-code: "https://github.com/tysonyj/m2or-provenance"
 keywords:
   - benchmark
   - evaluation methodology
