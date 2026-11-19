@@ -649,7 +649,15 @@ def fig_controls(aux, bench, out):
     lt = pd.read_csv(os.path.join(bench, "controls_latent.csv"))
     from scipy.stats import wilcoxon, mannwhitneyu, spearmanr
 
-    fig, ax = plt.subplots(1, 5, figsize=(24, 5.4), gridspec_kw={"wspace": 0.34})
+    # Three panels above, two centred below: five in a row leaves each panel
+    # about 1.4 in wide at the printed column width, where the axes stop being
+    # readable.
+    fig = plt.figure(figsize=(16.5, 9.4))
+    gs = fig.add_gridspec(2, 6, wspace=0.92, hspace=0.30,
+                          left=0.055, right=0.985, top=0.955, bottom=0.085)
+    ax = [fig.add_subplot(gs[0, 0:2]), fig.add_subplot(gs[0, 2:4]),
+          fig.add_subplot(gs[0, 4:6]), fig.add_subplot(gs[1, 1:3]),
+          fig.add_subplot(gs[1, 3:5])]
 
     # a: full against size-matched training sets
     m = ts.dropna(subset=["matched"])
@@ -681,7 +689,7 @@ def fig_controls(aux, bench, out):
     ax[1].set_xticklabels(["RF", "Log", "GB"], fontsize=11.5)
     ax[1].set_ylabel("AUC, held-out source")
     ax[1].set_ylim(0.4, None)
-    ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=3,
+    ax[1].legend(loc="upper center", bbox_to_anchor=(0.5, -0.115), ncol=3,
                  frameon=False, columnspacing=1.0, handlelength=1.2)
     letter(ax[1], "b"); tidy(ax[1])
 
@@ -740,7 +748,6 @@ def fig_controls(aux, bench, out):
              int((d2 > 0).sum()), len(d2), pw))
     letter(ax[4], "e"); tidy(ax[4])
 
-    fig.subplots_adjust(left=0.04, right=0.995, top=0.91, bottom=0.21)
     fig.savefig(os.path.join(out, "f5.png"), dpi=240, bbox_inches="tight")
     plt.close(fig)
 
