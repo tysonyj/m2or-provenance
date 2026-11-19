@@ -2,6 +2,7 @@
 bench_out/
 bench_*/
 *.log
+external_validation/out/
 
 # figures written next to the scripts by paper_figures.py --out .
 /b1.png

@@ -67,6 +67,46 @@ def comparisons(calls, exclude=None):
                 yield per[dois[i]], per[dois[j]]
 
 
+
+def clustered_bootstrap(reps, replicates=1000, seed=0):
+    """Receptor-clustered percentile intervals for discordance and kappa.
+
+    Comparisons on the same receptor are not independent -- they share the
+    receptor's assays, its chemistry and often its laboratories -- so the
+    resampling unit is the receptor, not the comparison. Binomial intervals
+    computed over comparisons understate the uncertainty.
+    """
+    import random
+    by_rec = defaultdict(list)
+    for pair, per in reps.items():
+        rec = pair[0] if isinstance(pair, tuple) else pair.split("|")[0]
+        dois = list(per)
+        for i in range(len(dois)):
+            for j in range(i + 1, len(dois)):
+                by_rec[rec].append((per[dois[i]], per[dois[j]]))
+    recs = list(by_rec)
+    rng = random.Random(seed)
+    ds, ks = [], []
+    for _ in range(replicates):
+        drawn = [by_rec[recs[rng.randrange(len(recs))]] for _ in recs]
+        pairs = [p for g in drawn for p in g]
+        if not pairs:
+            continue
+        ds.append(sum(1 for a, b in pairs if a != b) / len(pairs))
+        k, _, _ = kappa_from_table(pairs)
+        ks.append(k)
+
+    def pct(v, q):
+        v = sorted(v)
+        i = (len(v) - 1) * q
+        lo, hi = int(i), min(int(i) + 1, len(v) - 1)
+        return v[lo] + (v[hi] - v[lo]) * (i - lo)
+
+    return ((pct(ds, 0.025), pct(ds, 0.975)),
+            (pct(ks, 0.025), pct(ks, 0.975)),
+            len(recs))
+
+
 def kappa_from_table(pairs):
     """Cohen's kappa from the symmetrised 2x2 table."""
     t = [[0, 0], [0, 0]]
@@ -106,6 +146,14 @@ def main():
     k2, _, _ = kappa_from_table(p2)
     print('    without ID normalisation: %d comparisons, discordance %.4f, kappa %.4f'
           % (len(p2), d2 / len(p2), k2))
+
+    # clustered intervals on the two headline statistics
+    nboot = int(os.environ.get('VERIFY_BOOT', '1000'))
+    (dlo, dhi), (klo, khi), nrec = clustered_bootstrap(reps, replicates=nboot)
+    print('(4) receptor-clustered 95%% intervals, %d replicates over %d receptors'
+          % (nboot, nrec))
+    print('    discordance               %.4f - %.4f' % (dlo, dhi))
+    print('    Cohen kappa               %.4f - %.4f' % (klo, khi))
 
 
 if __name__ == '__main__':

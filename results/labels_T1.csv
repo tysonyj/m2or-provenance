@@ -1,0 +1,6 @@
+task,fold,n_train,label_source,n_label_differs_from_observed
+T1,seed5-fold0,34813,pair consensus rebuilt from training sources only,422
+T1,seed5-fold1,34770,pair consensus rebuilt from training sources only,243
+T1,seed5-fold2,17616,pair consensus rebuilt from training sources only,248
+T1,seed5-fold3,29350,pair consensus rebuilt from training sources only,381
+T1,seed5-fold4,33299,pair consensus rebuilt from training sources only,410

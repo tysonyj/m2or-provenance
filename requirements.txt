@@ -4,4 +4,4 @@ scipy>=1.10
 scikit-learn>=1.3
 rdkit>=2023.3
 statsmodels>=0.14   # only for the odds-ratio models in dose_stats.py
-matplotlib>=3.7  # only for make_figures.py
+matplotlib>=3.7  # only for paper_figures.py

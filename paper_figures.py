@@ -62,28 +62,82 @@ def wilson(k, n, z=1.96):
 
 
 # ----------------------------------------------------------------- figure 1
-def fig_design(R, leak, out):
+def fig_design(R, leak, out, bench="bench_out"):
     fig = plt.figure(figsize=(20, 5.8))
     gs = fig.add_gridspec(1, 3, width_ratios=[1.45, 1.0, 1.0], wspace=0.28)
 
-    # a: the three tasks, as blocks aligned to the top of the panel
-    ax = fig.add_subplot(gs[0]); letter(ax, "a")
-    ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-    rows = [("T1  new molecule", "scaffold-disjoint, 5 repeated splits",
-             "Will this receptor respond to a\nchemotype not in training?", "#e8eef7"),
-            ("T2  new source", "publication-disjoint",
-             "Will this laboratory's screen\nreport a positive?", "#fbeae9"),
-            ("T3  replication", "publication-disjoint, pairs already\ncalled positive",
-             "Will an independent laboratory\nreproduce a reported positive?", "#eeeeee")]
-    top, h, gap = 0.97, 0.27, 0.035
-    for i, (name, sub, q, fill) in enumerate(rows):
-        y = top - i * (h + gap) - h
-        ax.add_patch(FancyBboxPatch((0.01, y), 0.98, h, boxstyle="round,pad=0.004",
-                                    linewidth=0, facecolor=fill, zorder=1))
-        ax.text(0.04, y + h - 0.055, name, fontsize=13.5, fontweight="bold", va="top")
-        ax.text(0.04, y + h - 0.125, sub, fontsize=10.5, style="italic",
-                color="#555555", va="top")
-        ax.text(0.47, y + h / 2, q, fontsize=11.5, va="center")
+    # a: how the three tasks cut the same records. Rows are the 34 source
+    # publications, columns the scaffold groups; a cell is a (source, scaffold)
+    # combination that the database actually contains. Tint marks the unit the
+    # task holds out as a whole -- whole scaffold columns for T1, a whole source
+    # row for T2 and T3 -- and solid colour the records actually scored.
+    rec = pd.read_csv(os.path.join(bench, "records.csv"))
+    fds = {t: pd.read_csv(os.path.join(bench, "folds_%s.csv" % t))
+           for t in ("T1", "T2", "T3")}
+    # Acyclic molecules have an empty Bemis-Murcko scaffold. They are one group
+    # in the split and never divide, so they get the last column.
+    rec = rec.assign(scafg=rec.scaf.fillna("(acyclic)"))
+    srcs = rec.groupby("DOI").size().sort_values(ascending=False).index.tolist()
+    cnt = rec.groupby("scafg").size().sort_values(ascending=False)
+    scfs = [c for c in cnt.index if c != "(acyclic)"] + ["(acyclic)"]
+    si = {v: i for i, v in enumerate(srcs)}
+    ci = {v: i for i, v in enumerate(scfs)}
+    rr = rec.DOI.map(si).astype(int).values
+    cc = rec.scafg.map(ci).astype(int).values
+    nr, nc = len(srcs), len(scfs)
+    has = np.zeros((nr, nc), bool)
+    has[rr, cc] = True
+    pos = {v: i for i, v in enumerate(rec.record_id)}
+
+    def cells(task, fold):
+        f = fds[task]
+        ix = [pos[i] for i in f.record_id[f.fold == fold].values]
+        m = np.zeros((nr, nc), bool)
+        m[rr[ix], cc[ix]] = True
+        return m
+
+    f2 = fds["T2"].fold.iloc[0] if "sdata.2015.2" not in set(fds["T2"].fold) \
+        else "sdata.2015.2"
+    t1, t2, t3 = cells("T1", "seed1-fold0"), cells("T2", f2), cells("T3", f2)
+    h1 = np.zeros((nr, nc), bool); h1[:, t1.any(0)] = True
+    h2 = np.zeros((nr, nc), bool); h2[t2.any(1), :] = True
+    tint = np.array(matplotlib.colors.to_rgb("#e0eaf5"))
+    cell = np.array(matplotlib.colors.to_rgb("#cfcfcf"))
+    mark = np.array(matplotlib.colors.to_rgb(DBLUE))
+
+    sub = gs[0].subgridspec(3, 1, hspace=0.95)
+    rows = [("T1", "new molecule", "whole chemotypes held out", t1, h1),
+            ("T2", "new source", "one laboratory's whole screen held out", t2, h2),
+            ("T3", "replication", "that screen, already-reported positives only",
+             t3, h2)]
+    for k, (tag, name, note, M, H) in enumerate(rows):
+        ax = fig.add_subplot(sub[k])
+        if k == 0:
+            ax.text(-0.035, 1.72, "a", transform=ax.transAxes, fontsize=15,
+                    fontweight="bold", va="top", ha="left")
+        img = np.ones((nr, nc, 3))
+        img[H] = tint
+        img[has] = cell
+        img[M] = mark
+        ax.imshow(img, aspect="auto", interpolation="nearest")
+        ax.axvline(nc - 1.5, color="#888888", lw=0.7, ls=(0, (3, 2)))
+        ax.set_xticks([]); ax.set_yticks([])
+        for sp in ax.spines.values():
+            sp.set_color("#aaaaaa"); sp.set_linewidth(0.6)
+        ax.text(0.0, 1.30, tag, transform=ax.transAxes, fontsize=13.5,
+                fontweight="bold", va="bottom")
+        ax.text(0.055, 1.30, name, transform=ax.transAxes, fontsize=13.5,
+                va="bottom")
+        ax.text(0.0, 1.05, note, transform=ax.transAxes, fontsize=11,
+                color="#555555", va="bottom")
+        if k == 1:
+            ax.set_ylabel("34 source publications", fontsize=11.5, labelpad=2)
+        if k == 2:
+            ax.set_xticks([nc - 1])
+            ax.set_xticklabels(["acyclic"], fontsize=10.5, color="#444444")
+            ax.tick_params(axis="x", length=2.5, pad=1.5, color="#888888")
+            ax.set_xlabel("111 scaffold groups, by frequency",
+                          fontsize=11.5, labelpad=2)
 
     # b: leakage audit. Colour says whether sharing is permitted for that task,
     # not how large the count is, so a reader does not read red as a fault.
@@ -695,12 +749,14 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default="bench_out/results.csv")
     ap.add_argument("--leakage", default="bench_out/leakage.csv")
+    ap.add_argument("--bench", default="bench_out",
+                    help="harness output: records.csv and folds_T*.csv")
     ap.add_argument("--aux", default=None)
     ap.add_argument("--out", default=".")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     R = pd.read_csv(a.results)
-    fig_design(R, pd.read_csv(a.leakage), a.out)
+    fig_design(R, pd.read_csv(a.leakage), a.out, a.bench)
     fig_results(R, a.out)
     fig_uncertainty(R, a.out)
     fig_dose(a.out)

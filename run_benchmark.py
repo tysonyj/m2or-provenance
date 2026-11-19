@@ -88,10 +88,15 @@ def eligible_sources(R):
             and R[R.DOI == s].y.sum() >= MIN_POS]
 
 
+EMPTY_FOLDS = pd.DataFrame({'record_id': pd.Series(dtype='int64'),
+                            'fold': pd.Series(dtype='object')})
+
+
 def folds_T2(R):
     return pd.concat([pd.DataFrame(dict(record_id=R.record_id.values[R.DOI.values == s],
                                         fold=s.split('/')[-1]))
-                      for s in eligible_sources(R)], ignore_index=True)
+                      for s in eligible_sources(R)] or [EMPTY_FOLDS],
+                     ignore_index=True)
 
 
 def folds_T3(R):
@@ -105,7 +110,10 @@ def folds_T3(R):
         if len(sel) >= MIN_TEST and sel.y.nunique() > 1 and sel.y.sum() >= MIN_POS:
             rows.append(pd.DataFrame(dict(record_id=sel.record_id.values,
                                           fold=s.split('/')[-1])))
-    return pd.concat(rows, ignore_index=True)
+    # At strict eligibility thresholds no publication qualifies. Return an empty
+    # frame with the right columns rather than raising, so the threshold
+    # sensitivity runs in the supplement complete instead of stopping here.
+    return pd.concat(rows or [EMPTY_FOLDS], ignore_index=True)
 
 
 def doi_of(R, fold):
@@ -163,7 +171,7 @@ def reference_models():
     }
 
 
-def boot_ci(y, p, n=400, seed=0):
+def boot_ci(y, p, n=1000, seed=0):
     from sklearn.metrics import roc_auc_score
     rng = np.random.default_rng(seed)
     out = []

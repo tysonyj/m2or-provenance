@@ -1,0 +1,6 @@
+task,fold,n_train,label_source,n_label_differs_from_observed
+T2,acs.jafc.5b01884,37299,observed call of the training source,0
+T2,bjaa007,37335,observed call of the training source,0
+T2,bji002,37272,observed call of the training source,0
+T2,fonc.2018.00162,37411,observed call of the training source,0
+T2,j.jsb.2007.04.013,37276,observed call of the training source,0

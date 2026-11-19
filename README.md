@@ -36,11 +36,14 @@ verify.py             independent re-implementation of the headline label statis
 dose_stats.py         label composition and dose dependence
 controls.py           study-design split and Dawid-Skene relabelling controls
 paper_figures.py      regenerates every figure in the paper and the supplement
+agreement_trend.py    has cross-source agreement improved over two decades?
 M2OR_20230428.csv     the M2OR release analysed (42 MB, redistributed unmodified)
 ikey_smiles.csv       InChIKey -> SMILES, resolved from PubChem
 results/              all per-fold results and result tables from our run
 figures/              the figures as published
 third_party/          the licence of the redistributed database
+external_validation/  the same harness rebuilt on ChEMBL, with its frozen
+                      specification, code and per-fold results
 ```
 
 ## Reference models
@@ -182,12 +185,16 @@ contested.
 
 ```bash
 python paper_figures.py --results bench_out/results.csv \
-    --leakage bench_out/leakage.csv --aux <dir with the released result tables> --out figs
+    --leakage bench_out/leakage.csv --bench bench_out \
+    --aux <dir with the released result tables> --out figs
 ```
 
 Writes the four main-text figures and the four supplementary ones, and prints
 every quantity it draws so the figures can be checked against the text without
-opening them. `--aux` is only needed for the receptor-certification figure.
+opening them. `--bench` points at the harness output and supplies `records.csv`
+and the fold tables, which Figure 1a needs to draw how each task cuts the data;
+it defaults to `bench_out`. `--aux` is only needed for the receptor-certification
+figure.
 
 ### 8. Controls on the new-source result (about 20 minutes)
 
@@ -206,11 +213,14 @@ moves mean AUC from 0.652 to 0.581 over 17 folds, better on 4 of them
 
 | Task | RandomForest | Logistic | HistGB | ReceptorPrior |
 |---|---|---|---|---|
-| T1 new molecule (25 folds) | 0.664 | 0.743 | 0.739 | 0.751 |
-| T2 new source (17 folds) | 0.553 | 0.629 | 0.652 | 0.654 |
-| T3 replication (5 folds) | 0.517 | 0.491 | 0.591 | 0.423 |
+| T1 new molecule (25 folds) | 0.664 | 0.742 | 0.739 | 0.751 |
+| T2 new source (17 folds) | 0.553 | 0.630 | 0.652 | 0.654 |
+| T3 replication (5 folds) | 0.517 | 0.489 | 0.591 | 0.423 |
 
-These have been reproduced on a second machine, from this package alone. Over
+These are the values in `results/results.csv`, which is what a fresh run should
+match. The same table was reproduced on a second machine, from this package
+alone, agreeing within the tolerance below (logistic regression moved in the
+third decimal; the other three models did not move at all). Over
 all 188 fold-model values, random forest, gradient boosting and the receptor
 prior came out identical to five decimals; only logistic regression moved, by at
 most 0.0042 on one fold, which shifts a task mean by at most 0.0016 (its lbfgs
@@ -272,6 +282,14 @@ The database itself is a separate work and should be cited too:
 > M2OR: a database of olfactory receptor-odorant pairs for understanding the
 > molecular mechanisms of olfaction. *Nucleic Acids Research* **2024**, 52 (D1),
 > D1370-D1379. https://doi.org/10.1093/nar/gkad886
+
+## External validation on ChEMBL
+
+`external_validation/` rebuilds this harness, unmodified, on ChEMBL, under a
+specification frozen before any ChEMBL record was collected. Two of its four
+pre-specified outcomes transfer and two do not; the ranking result does not, and
+the paper confines that claim to M2OR accordingly. See
+`external_validation/README.md` and section 11 of the Supplementary Information.
 
 ## Licence
 
